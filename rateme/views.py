@@ -16,7 +16,7 @@ def rate_view(request, primary_key):
     if request.method == "GET":
         return render(request, 'rate.html', context)
 
-    # fix: form in POST request can't pass validation
+    # needs to be fixed: form in POST request can't pass validation
 
     elif request.method == "POST":
         if form.is_valid():
@@ -44,7 +44,7 @@ def rate_view(request, primary_key):
             return render(request, 'rate.html', context)
 
 def search_field():
-    pass
+    pass # todo
 
 def index_view(request):
     cards = RatingCard.objects.all()
@@ -67,8 +67,26 @@ def my_ratings_view(request):
     return render(request, 'my_ratings.html', context)
 
 def new_card_view(request):
-    context = {'form': NewCardForm()}
+    form = NewCardForm()
+    context = {'form': form}
     if request.method == 'GET':
         return render(request, 'new_card.html', context)
+    
+    # This form can't pass validation too -_-
+    # Probably simpliest way to solve this problem is
+    # just google it so I'll do it later
+    
     elif request.method == 'POST':
-        pass # todo
+        # do something with duplicates
+        if form.is_valid():
+            # there should be a way to save data directly, not like this
+            card = RatingCard(
+                title = form.cleaned_data['title'],
+                url = form.cleaned_data['url'],
+                text = form.cleaned_data['text'],
+            )
+            card.save()
+            return render(request, 'new_card.html', context)
+        else:
+            print('form is not valid')
+            return render(request, 'new_card.html', context)
