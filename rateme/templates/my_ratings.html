@@ -1,0 +1,29 @@
+<!-- templates/my_ratings.html-->
+{% extends 'base.html' %}
+
+{% block title %}My ratings{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  <p>Hi {{ user.username }}!</p>
+  <h2>Your ratings are listed below:</h2>
+  {% if ratings %}
+  <ul>
+    {% for rating in ratings %}
+    <li>{{ rating.rating }}, {{ rating.rating_card.title }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>You didn't rate anything yet!</p>
+  {% endif %}
+  <ul>
+    <li><a href="{% url 'logout' %}">logout</a></li>
+  </ul>
+{% else %}
+  <p>You must be logged in to see this page!</p>
+  <ul>
+  <li><a href="{% url 'login' %}">login</a></li>
+  <li><a href="{% url 'signup' %}">signup</a></li>
+  </ul>
+{% endif %}
+{% endblock %}

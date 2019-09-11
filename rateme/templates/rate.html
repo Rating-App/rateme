@@ -1,0 +1,19 @@
+<!-- rateme/polls/templates/rateme/rate.html -->
+{% extends 'base.html' %}
+
+{% block title %}Rate{% endblock %}
+
+{% block content %}
+<h1>How do you feel about?</h1>
+<h2>{{ card.title }}</h2>
+<p>{{ card.text }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+<button type="submit">Submit</button>
+</form>
+
+
+{% endblock %}
+

@@ -7,9 +7,8 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    #path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('', views.index, name='home'),
-    path('<int:pk>/', views.RateView.as_view(), name='rate'),
-    path('<int:pk>/vote/', views.vote, name='vote'),
+    path('', views.index_view, name='home'),
+    path('<int:primary_key>/', views.rate_view, name='rate'),
+    path('my-ratings/', views.my_ratings_view, name='my-ratings'),
 ]
 

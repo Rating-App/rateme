@@ -9,11 +9,12 @@
   <ul>
   <li>Start rating</li>
   <li>Add rating card</li>
+  <li><a href="{% url 'my-ratings' %}">My ratings</a></li>
   <li><a href="{% url 'logout' %}">logout</a></li>
   </ul>
   <ul>
   {% for title, id in cards %}
-  <li>{{ title }}, {{ id }}</li>
+  <li>{{ title }}, {{ id }} <a href="{% url 'rate' id %}">Rate this card</a></li>
   {% endfor %}
   </ul>
 {% else %}
