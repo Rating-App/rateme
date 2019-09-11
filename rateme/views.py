@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 
 from .models import Rating, RatingCard
-from .forms import RateForm
+from .forms import RateForm, NewCardForm
 
 def rate_view(request, primary_key):
     card = RatingCard.objects.get(pk=primary_key)
@@ -66,5 +66,9 @@ def my_ratings_view(request):
         context['ratings'] = None
     return render(request, 'my_ratings.html', context)
 
-def new_card_view():
-    pass
+def new_card_view(request):
+    context = {'form': NewCardForm()}
+    if request.method == 'GET':
+        return render(request, 'new_card.html', context)
+    elif request.method == 'POST':
+        pass # todo

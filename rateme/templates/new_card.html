@@ -1,0 +1,24 @@
+<!-- templates/new_card.html-->
+{% extends 'base.html' %}
+
+{% block title %}My ratings{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <h2>Create new card</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <button type="submit">Submit</button>
+    </form>
+  <ul>
+    <li><a href="{% url 'logout' %}">logout</a></li>
+  </ul>
+{% else %}
+  <p>You must be logged in to see this page!</p>
+  <ul>
+  <li><a href="{% url 'login' %}">login</a></li>
+  <li><a href="{% url 'signup' %}">signup</a></li>
+  </ul>
+{% endif %}
+{% endblock %}
