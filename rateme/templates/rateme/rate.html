@@ -1,4 +1,4 @@
-<!-- rateme/polls/templates/polls/rate.html -->
+<!-- rateme/polls/templates/rateme/rate.html -->
 {% extends 'base.html' %}
 
 {% block title %}Rate{% endblock %}
@@ -8,7 +8,7 @@
 
 <p>{{ rating.rating_card.text }}</p>
 
-<form action="{% url 'polls:vote' rating.id %}" method="post">
+<form action="{% url 'vote' rating.id %}" method="post">
 {% csrf_token %}
     <input type="radio" name="choice" id="choice0" value="0">
     <label for="choice0">Completely not interested</label><br>

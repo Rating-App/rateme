@@ -11,6 +11,11 @@
   <li>Add rating card</li>
   <li><a href="{% url 'logout' %}">logout</a></li>
   </ul>
+  <ul>
+  {% for title, id in cards %}
+  <li>{{ title }}, {{ id }}</li>
+  {% endfor %}
+  </ul>
 {% else %}
   <p>You are not logged in</p>
   <ul>

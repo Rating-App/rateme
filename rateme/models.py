@@ -3,10 +3,12 @@ from django.contrib.auth.models import User
 
 
 class RatingCard(models.Model):
+    title = models.CharField(max_length=200)
+    url = models.CharField(max_length=2047, null=True, blank=True) # needs to be validated
     text = models.CharField(max_length=1000)
     # todo: add title, link, picture fields.
     def __str__(self):
-        return self.text
+        return self.title
 
 RATING_CHOICES= [
     ('completely not interested', 'Completely Not Interested'),
@@ -21,7 +23,10 @@ class Rating(models.Model):
     rating = models.CharField(max_length=120, choices=RATING_CHOICES)
     rating_card = models.ForeignKey(RatingCard, on_delete=models.CASCADE)
     def __str__(self):
-        return self.user.get_username() + " is " + self.rating + " in " + self.rating_card.text
+        return self.user.get_username() + " is " + self.rating + " in " + self.rating_card.title
 
     class Meta:
         unique_together = ["user", "rating_card"]
+
+class Tags(models.Model):
+    rating_card = models.ForeignKey(RatingCard, on_delete=models.CASCADE)
