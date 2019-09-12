@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from rateme.models import RatingCard
+from django.db import IntegrityError
 import os
 
 class Command(BaseCommand):
@@ -14,13 +15,18 @@ class Command(BaseCommand):
         for movie in movies_file:
             if i > 0:
                 movie_data = movie.split(",")
+
                 ratingCard = RatingCard()
-                ratingCard.title = movie_data[1]
-                ratingCard.save()
+                title = movie_data[1]
+                if title[0] == "\"":
+                    title = title[1:]
+                ratingCard.title = title
+                try:
+                    ratingCard.save()
+                except IntegrityError:
+                    print("already exists")
                 print(movie_data)
-                print(str(i) + "/100")
-                if i > 100: # temporary, would need to import all I guess
-                    break
+                print(str(i))
             i = i + 1
 
         movies_file.close()
