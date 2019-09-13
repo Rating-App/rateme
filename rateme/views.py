@@ -16,9 +16,8 @@ def rate_view(request, primary_key):
     if request.method == "GET":
         return render(request, 'rate.html', context)
 
-    # needs to be fixed: form in POST request can't pass validation
-
     elif request.method == "POST":
+        form = RateForm(request.POST)
         if form.is_valid():
             try:
                 rate = Rating.objects.get(
@@ -46,13 +45,44 @@ def rate_view(request, primary_key):
 def search_field():
     pass # todo
 
+def make_pagination(current_page, pages_count):
+    pagination = []
+    for page in range(1, pages_count+1):
+        if page == current_page:
+            string = '[ <a class="active" href="?page=%s">%s</a> ]' % (
+                current_page,
+                current_page
+                )
+        else:
+            string = '[ <a href="?page=%s">%s</a> ]' % (
+                page,
+                page
+                )
+        pagination.append(string)
+    return pagination
+
 def index_view(request):
-    cards = RatingCard.objects.all()
+    current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
+    n = 20
+    # get all cards rated by current user
+    rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
+    # exclude all rated cards and count unrated cards
+    cards_count = RatingCard.objects.exclude(id__in=rated).count()
+    pages_count = int(cards_count / n) + 1 if cards_count % n > 0 else int(cards_count / n)
+    pagination = make_pagination(current_page, pages_count)
+    # calculate offset and limit based on current page
+    limit = n * current_page
+    offset = limit - n
+    # get 20 objects from unrated cards
+    cards = RatingCard.objects.exclude(id__in=rated)[offset:limit]
     context = {
         'cards': zip(
             [card.title for card in cards],
             [card.id for card in cards]
-            )}
+            # tags, ratings
+            ),
+        'pagination': pagination,
+        }
     return render(request, 'home.html', context)
 
 def my_ratings_view(request):
@@ -71,12 +101,9 @@ def new_card_view(request):
     context = {'form': form}
     if request.method == 'GET':
         return render(request, 'new_card.html', context)
-    
-    # This form can't pass validation too -_-
-    # Probably simpliest way to solve this problem is
-    # just google it so I'll do it later
-    
+
     elif request.method == 'POST':
+        form = NewCardForm(request.POST)
         # do something with duplicates
         if form.is_valid():
             # there should be a way to save data directly, not like this

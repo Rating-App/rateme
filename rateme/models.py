@@ -28,5 +28,6 @@ class Rating(models.Model):
     class Meta:
         unique_together = ["user", "rating_card"]
 
-class Tags(models.Model):
-    rating_card = models.ForeignKey(RatingCard, on_delete=models.CASCADE)
+class Tag(models.Model):
+    rating_cards = models.ManyToManyField(RatingCard)
+    tag = models.CharField(max_length=100, unique=True)

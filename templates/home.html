@@ -17,6 +17,9 @@
   <li>{{ title }}, {{ id }} <a href="{% url 'rate' id %}">Rate this card</a></li>
   {% endfor %}
   </ul>
+{% for page in pagination %}
+  {{ page|safe }}
+{% endfor %}
 {% else %}
   <p>You are not logged in</p>
   <ul>

@@ -9,27 +9,25 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         movies_path = os.path.dirname(os.path.realpath(__file__)) + "/../../../data/ml-latest-small/movies.csv"
 
-        movies_file = open(movies_path, 'r')
-        print("Importing movies...")
-        i = 0
-        for movie in movies_file:
-            if i > 0:
-                movie_data = movie.split(",")
+        with open(movies_path, 'r') as movies_file:
+            print("Importing movies...")
+            i = 0
+            for movie in movies_file:
+                if i > 0:
+                    movie_data = movie.split(",")
 
-                ratingCard = RatingCard()
-                title = movie_data[1]
-                if title[0] == "\"":
-                    title = title[1:]
-                ratingCard.title = title
-                try:
-                    ratingCard.save()
-                except IntegrityError:
-                    print("already exists")
-                print(movie_data)
-                print(str(i))
-            i = i + 1
-
-        movies_file.close()
+                    ratingCard = RatingCard()
+                    title = movie_data[1]
+                    if title[0] == "\"":
+                        title = title[1:]
+                    ratingCard.title = title
+                    try:
+                        ratingCard.save()
+                    except IntegrityError:
+                        print("already exists")
+                    print(movie_data)
+                    print(str(i))
+                i += 1
 
         #print("Hello world")
         #for poll_id in options['poll_ids']:
@@ -42,3 +40,16 @@ class Command(BaseCommand):
         #    poll.save()
 
         #    self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
+
+    '''
+    def handle(self, *args, **kwargs):
+        path = movies_path = os.path.dirname(os.path.realpath(__file__)) + "/../../../data/ml-latest-small/tags.csv"
+        with open(path, 'r') as tags:
+            print("importing tags")
+            for tag in tags:
+                tag.split(',')
+                try:
+                    pass
+                except:
+                    pass
+    '''
