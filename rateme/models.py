@@ -7,7 +7,7 @@ class RatingCard(models.Model):
     url = models.CharField(max_length=2047, null=True, blank=True, unique=True) # needs to be validated
     text = models.CharField(max_length=1000, null=True, blank=True, unique=True)
     card_id = models.CharField(max_length=100, null=True, blank=True)
-    # todo: add picture field, add many-to-many relationship for tags.
+    # todo: add picture field.
     def __str__(self):
         return self.title
 
