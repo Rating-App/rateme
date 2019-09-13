@@ -65,7 +65,10 @@ def index_view(request):
     current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
     n = 20
     # get all cards rated by current user
-    rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
+    if request.user.is_anonymous:
+        rated = []
+    else:
+        rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
     # exclude all rated cards and count unrated cards
     cards_count = RatingCard.objects.exclude(id__in=rated).count()
     pages_count = int(cards_count / n) + 1 if cards_count % n > 0 else int(cards_count / n)
