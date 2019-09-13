@@ -62,27 +62,30 @@ def make_pagination(current_page, pages_count):
     return pagination
 
 def index_view(request):
-    current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
-    n = 20
-    # get all cards rated by current user
-    rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
-    # exclude all rated cards and count unrated cards
-    cards_count = RatingCard.objects.exclude(id__in=rated).count()
-    pages_count = int(cards_count / n) + 1 if cards_count % n > 0 else int(cards_count / n)
-    pagination = make_pagination(current_page, pages_count)
-    # calculate offset and limit based on current page
-    limit = n * current_page
-    offset = limit - n
-    # get 20 objects from unrated cards
-    cards = RatingCard.objects.exclude(id__in=rated)[offset:limit]
-    context = {
-        'cards': zip(
-            [card.title for card in cards],
-            [card.id for card in cards]
-            # tags, ratings
-            ),
-        'pagination': pagination,
-        }
+    if request.user.is_authenticated:
+        current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
+        n = 20
+        # get all cards rated by current user
+        rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
+        # exclude all rated cards and count unrated cards
+        cards_count = RatingCard.objects.exclude(id__in=rated).count()
+        pages_count = int(cards_count / n) + 1 if cards_count % n > 0 else int(cards_count / n)
+        pagination = make_pagination(current_page, pages_count)
+        # calculate offset and limit based on current page
+        limit = n * current_page
+        offset = limit - n
+        # get 20 objects from unrated cards
+        cards = RatingCard.objects.exclude(id__in=rated)[offset:limit]
+        context = {
+            'cards': zip(
+                [card.title for card in cards],
+                [card.id for card in cards]
+                # tags, ratings
+                ),
+            'pagination': pagination,
+            }
+    else:
+        context = {}
     return render(request, 'home.html', context)
 
 def my_ratings_view(request):

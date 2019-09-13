@@ -4,22 +4,24 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% load static %}
 {% if user.is_authenticated %}
-  <p>Hi {{ user.username }}!</p>
-  <ul>
-  <li>Start rating</li>
+  <div class='user'>{{ user.username }}</div>
+  <ul class='menu'>
   <li><a href="{% url 'new-card' %}">Create new card</a></li>
   <li><a href="{% url 'my-ratings' %}">My ratings</a></li>
   <li><a href="{% url 'logout' %}">logout</a></li>
   </ul>
-  <ul>
+  <div class='content'>
   {% for title, id in cards %}
-  <li>{{ title }}, {{ id }} <a href="{% url 'rate' id %}">Rate this card</a></li>
+    <div>{{ title }}, {{ id }} <a href="{% url 'rate' id %}">Rate this card</a></div>
   {% endfor %}
-  </ul>
-{% for page in pagination %}
-  {{ page|safe }}
-{% endfor %}
+  </div>
+  <div class='pagination'>
+  {% for page in pagination %}
+    {{ page|safe }}
+  {% endfor %}
+  </div>
 {% else %}
   <p>You are not logged in</p>
   <ul>

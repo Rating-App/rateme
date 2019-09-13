@@ -1,0 +1,48 @@
+body {
+background-color: #c6b6b6;
+}
+
+.menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #665656;
+}
+
+.menu li {
+float: left;
+}
+
+.user {
+  display: block;
+  float: left;
+  background-color: #261616;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.menu li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.menu li a:hover {
+  background-color: #463636;
+}
+
+.content {
+margin: 10px 0;
+}
+
+.content div {
+margin: 10px 0;
+padding: 5px 5px;
+background-color: #b1a1a1;
+color: #160606;
+}
