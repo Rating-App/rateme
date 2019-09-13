@@ -42,7 +42,7 @@ class Command(BaseCommand):
                             rating.save()
                         except IntegrityError:
                             print("already exists")
-                    except DoesNotExist:
+                    except RatingCard.DoesNotExist:
                         print("rating card does not exist")
                     print(str(i))
                 i += 1
