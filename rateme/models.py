@@ -36,3 +36,7 @@ class Tag(models.Model):
 class Movie(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     genre = models.CharField(max_length=100, unique=True)
+
+class Recommendation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating_card = models.ForeignKey(RatingCard, on_delete=models.CASCADE)
