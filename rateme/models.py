@@ -32,3 +32,4 @@ class Rating(models.Model):
 class Tag(models.Model):
     rating_cards = models.ManyToManyField(RatingCard)
     tag = models.CharField(max_length=100, unique=True)
+    genre = models.CharField(max_length=100, unique=True)
