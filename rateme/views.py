@@ -8,11 +8,13 @@ def process_form(form):
     pass
 
 def rate_view(request, primary_key):
-    card = RatingCard.objects.get(pk=primary_key)
+    card = RatingCard.objects.get(pk=primary_key) # get_object_or_404
+    tags = card.tag_set.all()
     form = RateForm()
 
     context = {
     'card': card,
+    'tags': tags,
     'form': form,
     }
 
@@ -79,7 +81,7 @@ def index_view(request):
         limit = n * current_page
         offset = limit - n
         # get 20 objects from unrated cards
-        cards = RatingCard.objects.exclude(id__in=rated)[offset:limit]
+        cards = RatingCard.objects.order_by('-id').exclude(id__in=rated)[offset:limit]
         context = {
             'cards': zip(
                 [card.title for card in cards],
@@ -118,7 +120,7 @@ def my_ratings_view(request):
     context = {}
     try:
         # don't like that user=user but whatever
-        ratings = Rating.objects.filter(user=user)
+        ratings = Rating.objects.filter(user=user).order_by('-id')
         context['ratings'] = ratings
     except Rating.DoesNotExist:
         context['ratings'] = None

@@ -6,25 +6,20 @@
 {% block content %}
 {% load static %}
 {% if user.is_authenticated %}
-  <div class='user'>{{ user.username }}</div>
-  <ul class='menu'>
-  <li><a href="{% url 'new-card' %}">Create new card</a></li>
-  <li><a href="{% url 'my-ratings' %}">My ratings</a></li>
-  <li><a href="{% url 'logout' %}">logout</a></li>
-  </ul>
+  {% include 'menu.html' %}
   <div class='content'>
   {% for title, id in cards %}
-    <div>
+    <div class="card">
       <a href="{% url 'rate' id %}">{{ title }}</a>
       <form method='POST' class="home_rateform">
         {% csrf_token %}
-        <span>
+        <span class="select_wrapper">
           {{ form.rating }}
         </span>
         <span>
           <input name="rating_card" id="id_rating_card" value="{{ id }}" type="hidden">
         </span>
-        <input type="submit" value="Rate">
+        <input class="submit_rating" type="submit" value="Rate">
       </form>
     </div>
   {% endfor %}
@@ -35,10 +30,6 @@
   {% endfor %}
   </div>
 {% else %}
-  <p>You are not logged in</p>
-  <ul>
-  <li><a href="{% url 'login' %}">login</a></li>
-  <li><a href="{% url 'signup' %}">signup</a></li>
-  </ul>
+{% include 'login.html' %}
 {% endif %}
 {% endblock %}

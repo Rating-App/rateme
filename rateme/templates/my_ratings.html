@@ -5,6 +5,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+  {% include 'menu.html' %}
   <p>Hi {{ user.username }}!</p>
   <h2>Your ratings are listed below:</h2>
   {% if ratings %}

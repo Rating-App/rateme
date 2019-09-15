@@ -2,18 +2,44 @@
 {% extends 'base.html' %}
 
 {% block title %}Rate{% endblock %}
-
 {% block content %}
-<h1>How do you feel about?</h1>
-<h2>{{ card.title }}</h2>
-<p>{{ card.text }}</p>
+{% include 'menu.html' %}
+{% if card.title %}
+<h2 class="card_title">{{ card.title }}</h2>
+{% else %}
+<h2 class="card_title">No title</h2>
+{% endif %}
+<div class="content">
+    <div class="card_picture">placeholder for images</div>
+    {% if card.text %}
+        <div class="card_content">
+            <p>{{ card.text }}</p>
+        </div>
+    {% else %}
+        <div class="card_content">
+            <p>No description</p>
+        </div>
+    {% endif %}
+    {% if tags %}
+        <div class="tags_block">
+        {% for tag in tags %}
+            <span>{{ tag }}</span>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="tags_block">
+            <p>No tags</p>
+        </div>
+    {% endif %}
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-<button type="submit">Submit</button>
-</form>
-
+    <form class="rate_page_form" method="POST">
+        {% csrf_token %}
+        <span class="select_wrapper">
+            {{ form.rating }}
+        </span>
+        <input class="submit_rating" type="submit" value="Rate">
+    </form>
+</div>
 
 {% endblock %}
 
