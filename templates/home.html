@@ -14,7 +14,19 @@
   </ul>
   <div class='content'>
   {% for title, id in cards %}
-    <div>{{ title }}, {{ id }} <a href="{% url 'rate' id %}">Rate this card</a></div>
+    <div>
+      <a href="{% url 'rate' id %}">{{ title }}</a>
+      <form method='POST'>
+        {% csrf_token %}
+        <span>
+          {{ form.rating }}
+        </span>
+        <span>
+          <input name="rating_card" id="id_rating_card" value="{{ id }}" type="hidden">
+        </span>
+        <input type="submit" value="Rate">
+      </form>
+    </div>
   {% endfor %}
   </div>
   <div class='pagination'>
