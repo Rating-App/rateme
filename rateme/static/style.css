@@ -1,48 +1,75 @@
 body {
-background-color: #c6b6b6;
-}
-
-.menu {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: #665656;
-}
-
-.menu li {
-float: left;
-}
-
-.user {
-  display: block;
+  background-color: #c6b6b6;
+  color: #160606;
+  }
+  
+  .menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #665656;
+    box-shadow: 0 0 10px #665656;
+  }
+  
+  .menu li {
   float: left;
-  background-color: #261616;
-  color: white;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-}
-
-.menu li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 12px;
-  text-decoration: none;
-}
-
-.menu li a:hover {
-  background-color: #463636;
-}
-
-.content {
-margin: 10px 0;
-}
-
-.content div {
-margin: 10px 0;
-padding: 5px 5px;
-background-color: #b1a1a1;
-color: #160606;
-}
+  }
+  
+  .user {
+    display: block;
+    float: left;
+    background-color: #261616;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    box-shadow: 0 0 10px #261616;
+  }
+  
+  .menu li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+  }
+  
+  .menu li a:hover {
+    background-color: #463636;
+  }
+  
+  .content {
+  margin: 10px 0;
+  }
+  
+  .content div {
+  margin: 10px 0;
+  padding: 5px 5px;
+  background-color: #b1a1a1;
+  color: #160606;
+  box-shadow: 0 0 5px #b1a1a1;
+  }
+  
+  .content div a {
+    color: #120202;
+    text-decoration: none;
+  }
+  
+  .content div a:hover {
+    color: white;
+  }
+  
+  .content div:hover {
+    background-color: #463636;
+    color: white;
+    box-shadow: 0 0 5px #463636;
+  }
+  
+  .content div:hover a {
+    color: white;
+  }
+  
+  .content div form {
+    float: right;
+  }

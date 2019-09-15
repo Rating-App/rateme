@@ -16,7 +16,7 @@
   {% for title, id in cards %}
     <div>
       <a href="{% url 'rate' id %}">{{ title }}</a>
-      <form method='POST'>
+      <form method='POST' class="home_rateform">
         {% csrf_token %}
         <span>
           {{ form.rating }}
