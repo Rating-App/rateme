@@ -4,6 +4,9 @@ from django.views import generic
 from .models import Rating, RatingCard
 from .forms import RateForm, NewCardForm
 
+def process_form(form):
+    pass
+
 def rate_view(request, primary_key):
     card = RatingCard.objects.get(pk=primary_key)
     form = RateForm()
@@ -63,6 +66,7 @@ def make_pagination(current_page, pages_count):
 
 def index_view(request):
     if request.user.is_authenticated:
+        form = RateForm()
         current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
         n = 20
         # get all cards rated by current user
@@ -83,7 +87,28 @@ def index_view(request):
                 # tags, ratings
                 ),
             'pagination': pagination,
+            'form': form,
             }
+        if request.method == "POST":
+            form = RateForm(request.POST)
+            if form.is_valid():
+                print(form.cleaned_data)
+                print(request.POST.get('rating_card'))
+                try:
+                    rate = Rating(
+                        rating_card = RatingCard.objects.get\
+                            (pk=int(request.POST.get('rating_card'))),
+                        user = request.user,
+                        rating = form.cleaned_data['rating'],
+                    )
+
+                    rate.save()
+                except Rating.DoesNotExist:
+                    pass # todo
+                except ValueError:
+                    pass # todo
+            return render(request, 'rate.html', context)
+
     else:
         context = {}
     return render(request, 'home.html', context)
