@@ -1,0 +1,30 @@
+<!-- templates/my_recommendations.html-->
+{% extends 'base.html' %}
+
+{% block title %}My recommendations{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  {% include 'menu.html' %}
+  <p>Hi {{ user.username }}!</p>
+  <h2>Your recommendations are listed below:</h2>
+  {% if recommendations %}
+  <ul>
+    {% for recommendation in recommendations %}
+    <li>{{ recommendation.rating_card.title }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>None yet! Please rate more cards first! Or wait about 10 minutes for recommendations to be ready :(</p>
+  {% endif %}
+  <ul>
+    <li><a href="{% url 'logout' %}">logout</a></li>
+  </ul>
+{% else %}
+  <p>You must be logged in to see this page!</p>
+  <ul>
+  <li><a href="{% url 'login' %}">login</a></li>
+  <li><a href="{% url 'signup' %}">signup</a></li>
+  </ul>
+{% endif %}
+{% endblock %}

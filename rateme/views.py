@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import generic
 
-from .models import Rating, RatingCard
+from .models import Rating, RatingCard, Recommendation
 from .forms import RateForm, NewCardForm
 
 def process_form(form):
@@ -128,6 +128,18 @@ def my_ratings_view(request):
         except Rating.DoesNotExist:
             context['ratings'] = None
     return render(request, 'my_ratings.html', context)
+
+def my_recommendations_view(request):
+    user = request.user
+    context = {}
+    if user.is_authenticated:
+        try:
+            # don't like that user=user but whatever
+            recommendations = Recommendation.objects.filter(user=user).order_by('-id')
+            context['recommendations'] = recommendations
+        except Rating.DoesNotExist:
+            context['recommendations'] = None
+    return render(request, 'my_recommendations.html', context)
 
 def new_card_view(request):
     form = NewCardForm()
