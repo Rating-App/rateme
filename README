@@ -1,1 +1,9 @@
-To get data, cd to data and run ./get_data.sh
+To get data, run:
+    ./get_data.sh
+
+To import data, run:
+    python3 manage.py import_cards
+    python3 manage.py import_ratings
+
+To create recommendations, run:
+    python3 manage.py make_recommendations
