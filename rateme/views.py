@@ -47,8 +47,10 @@ def rate_view(request, primary_key):
             print('form is not valid')
             return render(request, 'rate.html', context)
 
-def search_field():
-    pass # todo
+def search_view(request):
+    if request.method == "GET":
+        pass
+    #return render(request, 'search.html', context)
 
 def make_pagination(current_page, pages_count):
     pagination = []
@@ -118,12 +120,13 @@ def index_view(request):
 def my_ratings_view(request):
     user = request.user
     context = {}
-    try:
-        # don't like that user=user but whatever
-        ratings = Rating.objects.filter(user=user).order_by('-id')
-        context['ratings'] = ratings
-    except Rating.DoesNotExist:
-        context['ratings'] = None
+    if user.is_authenticated:
+        try:
+            # don't like that user=user but whatever
+            ratings = Rating.objects.filter(user=user).order_by('-id')
+            context['ratings'] = ratings
+        except Rating.DoesNotExist:
+            context['ratings'] = None
     return render(request, 'my_ratings.html', context)
 
 def new_card_view(request):
