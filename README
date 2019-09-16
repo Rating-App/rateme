@@ -7,3 +7,9 @@ To import data, run:
 
 To create recommendations, run:
     python3 manage.py make_recommendations
+Or run in in a loop:
+    ./make_recommendations.sh
+
+Other useful commands:
+    manage.py dbshell -- postgresql shell
+    -- use DROP TABLES name; and then manage.py migrate --run-syncdb to fix some errors

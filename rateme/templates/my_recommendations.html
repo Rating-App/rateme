@@ -11,7 +11,7 @@
   {% if recommendations %}
   <ul>
     {% for recommendation in recommendations %}
-    <li>{{ recommendation.rating_card.title }}</li>
+    <li>{{ recommendation.rating_card.title }} with rating {{ recommendation.rating_card.value }}</li>
     {% endfor %}
   </ul>
   {% else %}

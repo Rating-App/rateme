@@ -40,6 +40,7 @@ class Movie(models.Model):
 class Recommendation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating_card = models.ForeignKey(RatingCard, on_delete=models.CASCADE)
+    value = models.DecimalField(max_digits=5, decimal_places=3)
     def __str__(self):
         return "Recommending " + self.rating_card.title + " to " + self.user.get_username()
 
