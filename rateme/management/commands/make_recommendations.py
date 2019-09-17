@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from rateme.models import RatingCard, Recommendation
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+import time
 
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -10,8 +11,9 @@ import psycopg2
 import time
 import sys
 
-NSTEPS = 100
+NSTEPS = 1
 RANK = 100
+CONSIDER_ACTIVE = 60*60*24 # in seconds, i.e. 60*60*24 -- only update those users that logged in at least a day ago
 
 class Command(BaseCommand):
     help = 'Makes recommendations'
@@ -119,10 +121,14 @@ class Command(BaseCommand):
                                  str(cards_back[n]) + "," + str(i) + ");")
                     i += 1
                     """
-                    recommendation = Recommendation()
-                    recommendation.user = User.objects.all().get(pk=users_back[m])
-                    recommendation.rating_card = RatingCard.objects.all().get(pk=cards_back[n])
-                    recommendation.value = M[m,n]
-                    recommendation.save()
+                    user = User.objects.all().get(pk=users_back[m])
+                    if user.last_login and \
+                       int(time.time()) - int(user.last_login.strftime('%s')) < CONSIDER_ACTIVE:
+
+                        recommendation = Recommendation()
+                        recommendation.user = User.objects.all().get(pk=users_back[m])
+                        recommendation.rating_card = RatingCard.objects.all().get(pk=cards_back[n])
+                        recommendation.value = M[m,n]
+                        recommendation.save()
             
             print(m)
