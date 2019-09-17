@@ -11,10 +11,10 @@ import psycopg2
 import time
 import sys
 
-NSTEPS = 5
+NSTEPS = 1
 RANK = 200
 CONSIDER_ACTIVE = 60*60*24 # in seconds, i.e. 60*60*24 -- only update those users that logged in at least a day ago
-MINRATING = 0.1 # minimum rating to consider for recommendation
+MINRATING = 0.5 # minimum rating to consider for recommendation
 SMALL = 0.1 # if predicted rating changed by less than this, don't update the records
 
 class Command(BaseCommand):
@@ -129,30 +129,33 @@ class Command(BaseCommand):
 
             print("exporting to DB")
 
-            # i = 0
-            for m in range(num_users):
-                for n in range(num_cards):
-                    if M[m,n] >= MINRATING:
-                        if m < old_row_num and n < old_col_num and np.abs(M[m,n] - Mold[m,n]) > SMALL:
-                            #INSERT INTO rateme_recommendation VALUES (1,1,1);
-                            # Ok, donno how to do this, let's just use Django objects for now...
-                            # The problem comes from i. How do I know which id to choose??
-                            """
-                            cur.execute("INSERT INTO rateme_recommendation VALUES (" +\
-                                         str(users_back[m]) + "," +\
-                                         str(cards_back[n]) + "," + str(i) + ");")
-                            i += 1
-                            """
-                            user = User.objects.all().get(pk=users_back[m])
-                            if user.last_login and \
-                               int(time.time()) - int(user.last_login.strftime('%s')) < CONSIDER_ACTIVE:
+            i = 0
+            for m,n in np.argwhere(M >= MINRATING):
+                if m < old_row_num and n < old_col_num and np.abs(M[m,n] - Mold[m,n]) > SMALL:
+                    #INSERT INTO rateme_recommendation VALUES (1,1,1);
+                    # Ok, donno how to do this, let's just use Django objects for now...
+                    # The problem comes from i. How do I know which id to choose??
+                    """
+                    cur.execute("INSERT INTO rateme_recommendation VALUES (" +\
+                                 str(users_back[m]) + "," +\
+                                 str(cards_back[n]) + "," + str(i) + ");")
+                    i += 1
+                    """
+                    user = User.objects.all().get(pk=users_back[m])
+                    if user.last_login and \
+                       int(time.time()) - int(user.last_login.strftime('%s')) < CONSIDER_ACTIVE:
 
-                                recommendation = Recommendation()
-                                recommendation.user = User.objects.all().get(pk=users_back[m])
-                                recommendation.rating_card = RatingCard.objects.all().get(pk=cards_back[n])
-                                recommendation.value = M[m,n]
-                                recommendation.save()
-                        else:
-                            print("didn't change")
-                if m % 100 == 0:
-                    print(m, time.time() - starting_time)
+                        try:
+                            recommendation = Recommendation()
+                            recommendation.user = User.objects.all().get(pk=users_back[m])
+                            recommendation.rating_card = RatingCard.objects.all().get(pk=cards_back[n])
+                            recommendation.value = M[m,n]
+                            recommendation.save()
+                        except IntegrityError:
+                            pass # TODO: modify previous value 
+                    i = i + 1
+                    if i % 1000 == 0:
+                        print(i, time.time() - starting_time)
+                else:
+                    print("didn't change")
+
