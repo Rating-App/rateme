@@ -6,7 +6,6 @@
 {% block content %}
 {% load static %}
 {% if user.is_authenticated %}
-  {% include 'menu.html' %}
   <div class='content'>
   {% for title, id in cards %}
     <div class="card">

@@ -3,11 +3,13 @@
 
 {% block content %}
 {% if results %}
-<ul>
+<div class='content'>
 {% for result in results %}
-<li>{{ result }}</li>
+<div class="card">
+<a href="{% url 'rate' result.id %}">{{ result.title }}</a>
+</div>
 {% endfor %}
-</ul>
+</div>
 {% else %}
 <p>Nothing to search for...</p>
 {% endif %}

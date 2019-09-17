@@ -5,7 +5,6 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  {% include 'menu.html' %}
     <h2>Create new card</h2>
     <form method="POST">
         {% csrf_token %}

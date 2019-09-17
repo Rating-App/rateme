@@ -5,15 +5,16 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  {% include 'menu.html' %}
   <p>Hi {{ user.username }}!</p>
   <h2>Your ratings are listed below:</h2>
   {% if ratings %}
-  <ul>
-    {% for rating in ratings %}
-    <li>{{ rating.rating }}, {{ rating.rating_card.title }}</li>
-    {% endfor %}
-  </ul>
+  <div class='content'>
+  {% for rating in ratings %}
+  <div class="card">
+    <a href="{% url 'rate' rating.rating_card.id %}">{{ rating.rating }}, {{ rating.rating_card.title }}</a>
+  </div>
+  {% endfor %}
+  </div>
   {% else %}
   <p>You didn't rate anything yet!</p>
   {% endif %}

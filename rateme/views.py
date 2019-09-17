@@ -51,13 +51,14 @@ def rate_view(request, primary_key):
             return render(request, 'rate.html', context)
 
 def search_view(request):
+    # todo: length limit
     if request.method == "GET":
         query = request.GET.get('search')
         if query:
             context = {
                 'results': RatingCard.objects.filter(
                     Q(title__icontains=query) | Q(text__icontains=query)
-                )
+                ).order_by('-id')
             }
         else:
             context = {

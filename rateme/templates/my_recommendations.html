@@ -5,15 +5,16 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  {% include 'menu.html' %}
   <p>Hi {{ user.username }}!</p>
   <h2>Your recommendations are listed below:</h2>
   {% if recommendations %}
-  <ul>
-    {% for recommendation in recommendations %}
-    <li>{{ recommendation.rating_card.title }} with rating {{ recommendation.rating_card.value }}</li>
-    {% endfor %}
-  </ul>
+  <div class='content'>
+  {% for recommendation in recommendations %}
+  <div class="card">
+    <a href="{% url 'rate' rating.rating_card.id %}">{{ recommendation.rating_card.title }} with rating {{ recommendation.rating_card.value }}</a>
+  </div>
+  {% endfor %}
+  </div>
   {% else %}
   <p>None yet! Please rate more cards first! Or wait about 10 minutes for recommendations to be ready :(</p>
   {% endif %}
