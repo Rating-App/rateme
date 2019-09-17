@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import generic
 
 from django.db import IntegrityError
+from django.db.models import Q
 
 from .models import Rating, RatingCard, Recommendation
 from .forms import RateForm, NewCardForm
@@ -51,8 +52,18 @@ def rate_view(request, primary_key):
 
 def search_view(request):
     if request.method == "GET":
-        pass
-    #return render(request, 'search.html', context)
+        query = request.GET.get('search')
+        if query:
+            context = {
+                'results': RatingCard.objects.filter(
+                    Q(title__icontains=query) | Q(text__icontains=query)
+                )
+            }
+        else:
+            context = {
+                'results': None
+            }
+        return render(request, 'search.html', context)
 
 def make_pagination(current_page, pages_count):
     pagination = []

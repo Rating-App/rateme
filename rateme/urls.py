@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:primary_key>/', views.rate_view, name='rate'),
     path('my-ratings/', views.my_ratings_view, name='my-ratings'),
     path('my-recommendations/', views.my_recommendations_view, name='my-recommendations'),
-    path('new-card/', views.new_card_view, name='new-card')
+    path('new-card/', views.new_card_view, name='new-card'),
+    path('search/', views.search_view, name='search'),
 ]
 
