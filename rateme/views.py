@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
+
+from django.db import IntegrityError
 
 from .models import Rating, RatingCard, Recommendation
 from .forms import RateForm, NewCardForm
@@ -42,7 +44,7 @@ def rate_view(request, primary_key):
                 )
 
                 rate.save()
-            return render(request, 'rate.html', context)
+            return redirect('home')
         else:
             print('form is not valid')
             return render(request, 'rate.html', context)
@@ -103,15 +105,25 @@ def index_view(request):
                         rating_card = RatingCard.objects.get\
                             (pk=int(request.POST.get('rating_card'))),
                         user = request.user,
+                    )
+                    print(rate)
+                    rate.rating = form.cleaned_data['rating']
+
+                    rate.save() # field won't update for some reason
+                except Rating.DoesNotExist:
+                    rate = Rating(
+                        rating_card = RatingCard.objects.get\
+                            (pk=int(request.POST.get('rating_card'))),
+                        user = request.user,
                         rating = form.cleaned_data['rating'],
                     )
 
                     rate.save()
-                except Rating.DoesNotExist:
-                    pass # todo
                 except ValueError:
                     pass # todo
-            return render(request, 'rate.html', context)
+                except IntegrityError:
+                    pass
+            return render(request, 'home.html', context)
 
     else:
         context = {}
@@ -158,7 +170,7 @@ def new_card_view(request):
                 text = form.cleaned_data['text'],
             )
             card.save()
-            return render(request, 'new_card.html', context)
+            return redirect('home')
         else:
             print('form is not valid')
             return render(request, 'new_card.html', context)
