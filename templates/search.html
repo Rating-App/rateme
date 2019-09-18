@@ -2,14 +2,29 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
-{% if results %}
-<div class='content'>
-{% for result in results %}
-<div class="card">
-<a href="{% url 'rate' result.id %}">{{ result.title }}</a>
-</div>
-{% endfor %}
-</div>
+{% if data %}
+    <div class='content'>
+        {% for e in data %}
+          <div class="card">
+            <a href="{% url 'rate' e.id %}">{{ e.title }}</a>
+            <form method='POST' class="home_rateform">
+              {% csrf_token %}
+              <span class="select_wrapper">
+                {{ form.rating }}
+              </span>
+              <span>
+                <input name="rating_card" id="id_rating_card" value="{{ e.id }}" type="hidden">
+              </span>
+              <input class="submit_rating" type="submit" value="Rate">
+            </form>
+          </div>
+        {% endfor %}
+        </div>
+        <div class='pagination'>
+        {% for page in pagination %}
+          {{ page|safe }}
+        {% endfor %}
+    </div>
 {% else %}
 <p>Nothing to search for...</p>
 {% endif %}

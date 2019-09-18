@@ -6,13 +6,28 @@
 {% block content %}
 {% if user.is_authenticated %}
   <h2>Your recommendations are listed below:</h2>
-  {% if recommendations %}
+  {% if data %}
   <div class='content'>
-  {% for recommendation in recommendations %}
-  <div class="card">
-    <a href="{% url 'rate' recommendation.rating_card.id %}">{{ recommendation.rating_card.title }} with rating {{ recommendation.value }}</a>
-  </div>
-  {% endfor %}
+      {% for e in data %}
+        <div class="card">
+          <a href="{% url 'rate' e.rating_card.id %}">{{ e.rating_card.title }} with rating {{ e.value }}</a>
+          <form method='POST' class="home_rateform">
+            {% csrf_token %}
+            <span class="select_wrapper">
+              {{ form.rating }}
+            </span>
+            <span>
+              <input name="rating_card" id="id_rating_card" value="{{ e.id }}" type="hidden">
+            </span>
+            <input class="submit_rating" type="submit" value="Rate">
+          </form>
+        </div>
+      {% endfor %}
+      </div>
+      <div class='pagination'>
+      {% for page in pagination %}
+        {{ page|safe }}
+      {% endfor %}
   </div>
   {% else %}
   <p>None yet! Please rate more cards first! Or wait about 5 minutes for recommendations to be ready...</p>

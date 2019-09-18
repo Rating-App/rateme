@@ -52,21 +52,37 @@ def rate_view(request, primary_key):
 
 def search_view(request):
     # todo: length limit
+    # todo: fix bug with pagination
     if request.method == "GET":
         query = request.GET.get('search')
+        context = {}
+        form = RateForm()
         if query:
-            context = {
-                'results': RatingCard.objects.filter(
-                    Q(title__icontains=query) | Q(text__icontains=query)
-                ).order_by('-id')
-            }
+            try:
+                pagination, data = make_page(
+                    int(request.GET.get('page')) if request.GET.get('page') else 1,
+                    20,
+                    RatingCard.objects.filter(
+                        Q(title__icontains=query) | Q(text__icontains=query)
+                    ),
+                    '-id'
+                )
+                context.update({
+                    'pagination': pagination,
+                    'data': data,
+                    'form': form
+                })
+            except RatingCard.DoesNotExist:
+                pass # todo
         else:
             context = {
-                'results': None
+                'data': None
             }
         return render(request, 'search.html', context)
 
-def make_pagination(current_page, pages_count):
+def make_page(current_page, n, db_query, order):
+    rows_count = db_query.count()
+    pages_count = int(rows_count / n) + 1 if rows_count % n > 0 else int(rows_count / n)
     pagination = []
     for page in range(1, pages_count+1):
         if page == current_page:
@@ -80,33 +96,31 @@ def make_pagination(current_page, pages_count):
                 page
                 )
         pagination.append(string)
-    return pagination
+    limit = n * current_page
+    offset = limit - n
+    limited_query = db_query.order_by(order)[offset:limit]
+    return pagination, limited_query
 
 def index_view(request):
     if request.user.is_authenticated:
         form = RateForm()
-        current_page = int(request.GET.get('page')) if request.GET.get('page') else 1
-        n = 20
+        context = {}
         # get all cards rated by current user
         rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
-        # exclude all rated cards and count unrated cards
-        cards_count = RatingCard.objects.exclude(id__in=rated).count()
-        pages_count = int(cards_count / n) + 1 if cards_count % n > 0 else int(cards_count / n)
-        pagination = make_pagination(current_page, pages_count)
-        # calculate offset and limit based on current page
-        limit = n * current_page
-        offset = limit - n
-        # get 20 objects from unrated cards
-        cards = RatingCard.objects.order_by('-id').exclude(id__in=rated)[offset:limit]
-        context = {
-            'cards': zip(
-                [card.title for card in cards],
-                [card.id for card in cards]
-                # tags, ratings
-                ),
-            'pagination': pagination,
-            'form': form,
-            }
+        try:
+            pagination, data = make_page(
+                int(request.GET.get('page')) if request.GET.get('page') else 1,
+                20,
+                RatingCard.objects.exclude(id__in=rated),
+                '-id'
+            )
+            context.update({
+                'pagination': pagination,
+                'data': data,
+                'form': form
+            })
+        except RatingCard.DoesNotExist:
+            context['data'] = None
         if request.method == "POST":
             form = RateForm(request.POST)
             if form.is_valid():
@@ -143,26 +157,44 @@ def index_view(request):
 
 def my_ratings_view(request):
     user = request.user
+    form = RateForm()
     context = {}
     if user.is_authenticated:
         try:
-            # don't like that user=user but whatever
-            ratings = Rating.objects.filter(user=user).order_by('-id')
-            context['ratings'] = ratings
+            pagination, data = make_page(
+                int(request.GET.get('page')) if request.GET.get('page') else 1,
+                20,
+                Rating.objects.filter(user=user),
+                '-id'
+            )
+            context.update({
+                'pagination': pagination,
+                'data': data,
+                'form': form
+            })
         except Rating.DoesNotExist:
-            context['ratings'] = None
+            context['data'] = None
     return render(request, 'my_ratings.html', context)
 
 def my_recommendations_view(request):
     user = request.user
+    form = RateForm()
     context = {}
     if user.is_authenticated:
         try:
-            # don't like that user=user but whatever
-            recommendations = Recommendation.objects.filter(user=user).order_by('-value')
-            context['recommendations'] = recommendations
+            pagination, data = make_page(
+                int(request.GET.get('page')) if request.GET.get('page') else 1,
+                20,
+                Recommendation.objects.filter(user=user),
+                '-value'
+            )
+            context.update({
+                'pagination': pagination,
+                'data': data,
+                'form': form
+            })
         except Rating.DoesNotExist:
-            context['recommendations'] = None
+            context['data'] = None
     return render(request, 'my_recommendations.html', context)
 
 def new_card_view(request):
