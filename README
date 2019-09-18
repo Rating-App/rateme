@@ -14,3 +14,5 @@ This will likely eat all your processing powers, so use nice:
 Other useful commands:
     manage.py dbshell -- postgresql shell
     -- use DROP TABLES name; and then manage.py migrate --run-syncdb to fix some errors
+
+    pip install -r requirements.txt
