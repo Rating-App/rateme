@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from rateme.models import RatingCard, Recommendation
 from django.db import IntegrityError
 from django.contrib.auth.models import User
-import time
 
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -11,11 +10,11 @@ import psycopg2
 import time
 import sys
 
-NSTEPS = 10 # number of iteration steps between saving
+NSTEPS = 2#10 # number of iteration steps between saving
 RANK = 100
 CONSIDER_ACTIVE = 30*60*60*24 # in seconds, 
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
-MINRATING = 0.3 # minimum rating to consider for recommendation
+MINRATING = 0.1 # minimum rating to consider for recommendation
 SMALL = 0.1 # if predicted rating changed by less than this, don't update the records
 
 class Command(BaseCommand):
@@ -129,7 +128,14 @@ class Command(BaseCommand):
 
             i = 0
             last_time = time.time()
-            for m,n in np.argwhere(np.logical_and(M >= MINRATING, mask < 0.5)):
+
+            #N = csc_matrix((np.zeros(len(data)), (mrow, mcol)), shape=(num_users, num_cards)).toarray()
+            #active_users = csc_matrix((1, 1)).toarray()
+            active_users = csc_matrix((num_users, 1), dtype=bool).toarray()
+            for user in User.objects.all().filter(last_login__gte='2006-01-01'):
+                active_users[users[user.pk]] = True
+
+            for m,n in np.argwhere(np.logical_and(M >= MINRATING, mask < 0.5) * active_users):
                 #if m < old_row_num and n < old_col_num and np.abs(M[m,n] - Mold[m,n]) > SMALL:
                 #INSERT INTO rateme_recommendation VALUES (1,1,1);
                 # Ok, donno how to do this, let's just use Django objects for now...
@@ -141,10 +147,10 @@ class Command(BaseCommand):
                 i += 1
                 """
                 user = User.objects.all().get(pk=users_back[m])
-                rating_card = RatingCard.objects.all().get(pk=cards_back[n])
                 if user.last_login and \
                    int(time.time()) - int(user.last_login.strftime('%s')) < CONSIDER_ACTIVE:
 
+                    rating_card = RatingCard.objects.all().get(pk=cards_back[n])
                     try:
                         recommendation = Recommendation()
                         recommendation.user = user
