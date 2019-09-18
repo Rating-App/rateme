@@ -1,0 +1,5 @@
+Make sure arrays are stored as arrays, i.e.
+    M = csc_matrix((1, 1)).toarray()
+and not
+    M = csc_matrix((1, 1))
+This might break elementwise multiplication.

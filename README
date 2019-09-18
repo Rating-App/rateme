@@ -5,10 +5,11 @@ To import data, run:
     python3 manage.py import_cards
     python3 manage.py import_ratings
 
-To create recommendations, run:
+To create recommendations, run (will run in a loop):
     python3 manage.py make_recommendations
-Or run in in a loop:
-    ./make_recommendations.sh
+
+This will likely eat all your processing powers, so use nice:
+    nice -n 19 python3 manage.py make_recommendations
 
 Other useful commands:
     manage.py dbshell -- postgresql shell
