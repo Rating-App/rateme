@@ -159,7 +159,7 @@ def my_recommendations_view(request):
     if user.is_authenticated:
         try:
             # don't like that user=user but whatever
-            recommendations = Recommendation.objects.filter(user=user).order_by('-id')
+            recommendations = Recommendation.objects.filter(user=user).order_by('-value')
             context['recommendations'] = recommendations
         except Rating.DoesNotExist:
             context['recommendations'] = None
