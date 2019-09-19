@@ -111,15 +111,20 @@ def my_ratings_view(request):
 
 def my_recommendations_view(request):
     if request.method == "GET" and request.user.is_authenticated:
-        data = np.load("data/recommendations.npy")
+        print("loading...")
+        data = np.load("data/recommendations.npy", mmap_mode='r')
         users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
-        matrix2cards = np.load("data/cards_back.npy")
+        matrix2cards = np.load("data/cards_back.npy", mmap_mode='r')
+        print("loaded")
 
         matrix_id = users2matrix[request.user.pk]
+        print("matrix_id")
 
         predicted_ratings = data[matrix_id]
+        print("predicted_ratings")
 
-        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(data > 0.1)[1]]
+        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > -0.1)][0]
+        print("recommendations")
 
         return render(
             request,
@@ -127,9 +132,10 @@ def my_recommendations_view(request):
             make_context(
                 request,
                 20,
-                Recommendation.objects.filter(pk__in=recommendations),
+                RatingCard.objects.filter(pk__in=recommendations),
                 #Recommendation.objects.filter(user=request.user),
-                '-value',
+                #'-value',
+                '-id',
                 RateForm(),
             ),
         )
