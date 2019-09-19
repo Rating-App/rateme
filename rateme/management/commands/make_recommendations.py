@@ -11,7 +11,9 @@ import time
 import sys
 
 NSTEPS = 3 # number of iteration steps between saving
-RANK = 15
+# NOTE: rank 15 is too small, let's try 30
+
+RANK = 30
 CONSIDER_ACTIVE = 30*60*60*24 # in seconds, 
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
 MINRATING = 0.1 # minimum rating to consider for recommendation
