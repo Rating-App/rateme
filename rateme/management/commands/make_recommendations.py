@@ -10,12 +10,13 @@ import psycopg2
 import time
 import sys
 
-NSTEPS = 2#10 # number of iteration steps between saving
-RANK = 10
+NSTEPS = 3 # number of iteration steps between saving
+RANK = 15
 CONSIDER_ACTIVE = 30*60*60*24 # in seconds, 
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
 MINRATING = 0.1 # minimum rating to consider for recommendation
 SMALL = 0.1 # if predicted rating changed by less than this, don't update the records
+EPSILON = 0.45#0.37 # used for regularization
 
 class Command(BaseCommand):
     help = 'Makes recommendations'
@@ -34,6 +35,8 @@ class Command(BaseCommand):
         M = csc_matrix((1, 1)).toarray()
 
         Recommendation.objects.all().delete()
+        iter_num = 0
+        starting_time = time.time()
         while True:
             cur.execute("""SELECT * from rateme_rating""")
             rows = cur.fetchall()
@@ -109,18 +112,26 @@ class Command(BaseCommand):
             #old_row_num = num_users
             #old_col_num = num_cards
 
-            print("iter, time, delay, step, dist")
-            starting_time = time.time()
+            def project_one_rank(matrix):
+                ut, s, vt = sparsesvd(csc_matrix(matrix), 1)
+
+                return ut.T @ np.diag(s) @ vt
+
+            W = project_one_rank(mask)
+
+            print("glabal iter, iter, time, delay, step, dist")
             last_time = time.time()
             for i in range(NSTEPS):
-                M = project_low_rank(M + (observed_padded - M*mask))
+                M = project_low_rank(M + (observed_padded - M*mask)/(W + EPSILON))
 
-                print(i, time.time() - starting_time,
+                print(iter_num, i, time.time() - starting_time,
                          time.time() - last_time,
                             np.linalg.norm(N-M),
                             np.linalg.norm(M - observed_padded - M*(1-mask)))
                 last_time = time.time()
                 N = M
+
+                iter_num += 1
 
             np.save('data/recommendations', M)
             np.save('data/users', users)

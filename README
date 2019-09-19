@@ -11,6 +11,9 @@ To create recommendations, run (will run in a loop):
 This will likely eat all your processing powers, so use nice:
     nice -n 19 python3 manage.py make_recommendations
 
+To generate statistics (maybe put this in crontab):
+    python3 manage.py make_statistics
+
 Other useful commands:
     manage.py dbshell -- postgresql shell
     -- use DROP TABLES name; and then manage.py migrate --run-syncdb to fix some errors

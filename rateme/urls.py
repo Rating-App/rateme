@@ -13,5 +13,6 @@ urlpatterns = [
     path('my-recommendations/', views.my_recommendations_view, name='my-recommendations'),
     path('new-card/', views.new_card_view, name='new-card'),
     path('search/', views.search_view, name='search'),
+    path('statistics/', views.statistics_view, name='statistics'),
 ]
 

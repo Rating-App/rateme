@@ -1,0 +1,10 @@
+<!-- templates/statistics.html-->
+{% extends 'base.html' %}
+
+{% block title %}Statistics{% endblock %}
+
+{% block content %}
+  <h2>Statistics</h2>
+  {% load static %}
+  <img src="{% static "predicted.png" %}" alt="Singular values">
+{% endblock %}
