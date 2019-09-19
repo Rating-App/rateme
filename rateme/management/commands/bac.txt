@@ -127,3 +127,48 @@ class Command(BaseCommand):
             np.save('data/users_back', users_back)
             np.save('data/cards', cards)
             np.save('data/cards_back', cards_back)
+
+            """
+            print("exporting to DB")
+
+            i = 0
+            last_time = time.time()
+
+            #N = csc_matrix((np.zeros(len(data)), (mrow, mcol)), shape=(num_users, num_cards)).toarray()
+            #active_users = csc_matrix((1, 1)).toarray()
+            active_users = csc_matrix((num_users, 1), dtype=bool).toarray()
+            for user in User.objects.all().filter(last_login__gte='2006-01-01'):
+                active_users[users[user.pk]] = True
+
+            for m,n in np.argwhere(np.logical_and(M >= MINRATING, mask < 0.5) * active_users):
+                #if m < old_row_num and n < old_col_num and np.abs(M[m,n] - Mold[m,n]) > SMALL:
+                #INSERT INTO rateme_recommendation VALUES (1,1,1);
+                # Ok, donno how to do this, let's just use Django objects for now...
+                # The problem comes from i. How do I know which id to choose??
+                """
+               # cur.execute("INSERT INTO rateme_recommendation VALUES (" +\
+               #              str(users_back[m]) + "," +\
+               #              str(cards_back[n]) + "," + str(i) + ");")
+               # i += 1
+                """
+                user = User.objects.all().get(pk=users_back[m])
+                if user.last_login and \
+                   int(time.time()) - int(user.last_login.strftime('%s')) < CONSIDER_ACTIVE:
+
+                    rating_card = RatingCard.objects.all().get(pk=cards_back[n])
+                    try:
+                        recommendation = Recommendation()
+                        recommendation.user = user
+                        recommendation.rating_card = rating_card
+                        recommendation.value = M[m,n]
+                        recommendation.save()
+                    except IntegrityError:
+                        Recommendation.objects.get(user=user, rating_card=rating_card).value = M[m,n]
+                        # TODO: do something
+                    i = i + 1
+                    if i % 1000 == 0:
+                        print(i, time.time() - starting_time,  time.time() - last_time)
+                        last_time = time.time()
+                #else:
+                #    print("didn't change")
+            """
