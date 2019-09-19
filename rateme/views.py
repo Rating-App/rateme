@@ -8,6 +8,10 @@ from .models import Rating, RatingCard, Recommendation
 from .forms import RateForm, NewCardForm
 from .functions import make_context, make_page, process_rate_post_request
 
+import numpy as np
+from scipy.sparse import csc_matrix
+
+
 def rate_view(request, primary_key):
     card = RatingCard.objects.get(pk=primary_key) # get_object_or_404
     tags = card.tag_set.all()
@@ -107,13 +111,24 @@ def my_ratings_view(request):
 
 def my_recommendations_view(request):
     if request.method == "GET" and request.user.is_authenticated:
+        data = np.load("data/recommendations.npy")
+        users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
+        matrix2cards = np.load("data/cards_back.npy")
+
+        matrix_id = users2matrix[request.user.pk]
+
+        predicted_ratings = data[matrix_id]
+
+        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(data > 0.1)[1]]
+
         return render(
             request,
             'my_recommendations.html',
             make_context(
                 request,
                 20,
-                Recommendation.objects.filter(user=request.user),
+                Recommendation.objects.filter(pk__in=recommendations),
+                #Recommendation.objects.filter(user=request.user),
                 '-value',
                 RateForm(),
             ),

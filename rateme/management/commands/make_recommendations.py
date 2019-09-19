@@ -11,7 +11,7 @@ import time
 import sys
 
 NSTEPS = 2#10 # number of iteration steps between saving
-RANK = 100
+RANK = 10
 CONSIDER_ACTIVE = 30*60*60*24 # in seconds, 
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
 MINRATING = 0.1 # minimum rating to consider for recommendation
@@ -122,7 +122,7 @@ class Command(BaseCommand):
                 last_time = time.time()
                 N = M
 
-            np.save('data/recomendations', M)
+            np.save('data/recommendations', M)
             np.save('data/users', users)
             np.save('data/users_back', users_back)
             np.save('data/cards', cards)
