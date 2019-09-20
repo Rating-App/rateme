@@ -35,7 +35,6 @@ def rate_view(request, primary_key):
 
 def search_view(request):
     # todo: length limit
-    # todo: fix bug with pagination
     if request.method == "GET":
         query = request.GET.get('search')
         if query:
@@ -49,7 +48,8 @@ def search_view(request):
                         Q(title__icontains=query) | Q(text__icontains=query)
                     ),
                     '-id',
-                    RateForm()
+                    RateForm(),
+                    query=query # ...
                 ),
             )
         else:

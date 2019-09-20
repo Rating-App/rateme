@@ -2,17 +2,26 @@ from .forms import RateForm, NewCardForm
 from django.shortcuts import render, redirect
 from .models import Rating, RatingCard, Recommendation
 
-def make_context(request, n, db_query, order, form):
+def make_context(request, n, db_query, order, form, **kwargs):
     context = {}
     current_page = int(request.GET.get('page')) \
         if request.GET.get('page') else 1
     try:
-        pagination, data = make_page(
-            current_page,
-            n,
-            db_query,
-            order,
-        )
+        if 'query' in kwargs:
+            pagination, data = make_page(
+                current_page,
+                n,
+                db_query,
+                order,
+                query=kwargs['query'] # ...
+            )
+        else:
+            pagination, data = make_page(
+                current_page,
+                n,
+                db_query,
+                order,
+            )
         context.update({
             'pagination': pagination,
             'data': data,
@@ -22,23 +31,39 @@ def make_context(request, n, db_query, order, form):
         context['data'] = None
     return context
 
-def make_page(current_page, n, db_query, order):
+def make_page(current_page, n, db_query, order, **kwargs):
     rows_count = db_query.count()
     pages_count = int(rows_count / n) + 1 if rows_count % n > 0 \
         else int(rows_count / n)
     pagination = []
-    for page in range(1, pages_count+1):
-        if page == current_page:
-            string = '[ <a class="active" href="?page=%s">%s</a> ]' % (
-                current_page,
-                current_page
-                )
-        else:
-            string = '[ <a href="?page=%s">%s</a> ]' % (
-                page,
-                page
-                )
-        pagination.append(string)
+    if 'query' in kwargs:
+        for page in range(1, pages_count+1):
+            if page == current_page:
+                string = '[ <a class="active" href="?search=%s&page=%s">%s</a> ]' % (
+                    kwargs['query'],
+                    current_page,
+                    current_page
+                    )
+            else:
+                string = '[  <a href="?search=%s&page=%s">%s</a> ]' % (
+                    kwargs['query'],
+                    page,
+                    page
+                    )
+            pagination.append(string)
+    else:
+        for page in range(1, pages_count+1):
+            if page == current_page:
+                string = '[ <a class="active" href="?page=%s">%s</a> ]' % (
+                    current_page,
+                    current_page
+                    )
+            else:
+                string = '[ <a href="?page=%s">%s</a> ]' % (
+                    page,
+                    page
+                    )
+            pagination.append(string)
     limit = n * current_page
     offset = limit - n
     limited_query = db_query.order_by(order)[offset:limit]
