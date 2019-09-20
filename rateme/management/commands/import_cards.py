@@ -30,6 +30,8 @@ class Command(BaseCommand):
                     title = movie[1]
                     if title[0] == "\"":
                         title = title[1:]
+                    if title[-1] == "\"":
+                        title = title[:-1]
                     ratingCard.title = title
                     ratingCard.card_id = movie[0]
                     try:
