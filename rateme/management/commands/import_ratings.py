@@ -17,7 +17,7 @@ class Command(BaseCommand):
         path = os.path.dirname(os.path.realpath(__file__))
 
         # Users and their ratings (move to helper)
-        ratings_path = path + "/../../../data/ml-latest-small/ratings.csv"
+        ratings_path = path + "/../../../data/ml-latest/ratings.csv"
 
         with open(ratings_path, 'r') as ratings_file:
             print("Importing ratings...")

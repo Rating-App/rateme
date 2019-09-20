@@ -16,7 +16,7 @@ class Command(BaseCommand):
         path = os.path.dirname(os.path.realpath(__file__))
 
         # Movies (move to helper)
-        movies_path = path + "/../../../data/ml-latest-small/movies.csv"
+        movies_path = path + "/../../../data/ml-latest/movies.csv"
 
         with open(movies_path, 'r') as movies_file:
             print("Importing movies...")
