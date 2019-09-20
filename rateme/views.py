@@ -115,6 +115,7 @@ def my_recommendations_view(request):
         data = np.load("data/recommendations.npy", mmap_mode='r')
         users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
         matrix2cards = np.load("data/cards_back.npy", mmap_mode='r')
+        cards2matrix = np.load("data/cards.npy", allow_pickle=True).flat[0]
         #print("loaded")
 
         matrix_id = users2matrix[request.user.pk]
@@ -123,7 +124,7 @@ def my_recommendations_view(request):
         predicted_ratings = data[matrix_id]
         #print("predicted_ratings")
 
-        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > -0.1)][0]
+        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > 1)][0]
         #print("recommendations")
 
         return render(
@@ -132,6 +133,12 @@ def my_recommendations_view(request):
             make_context(
                 request,
                 20,
+
+                # NOTE: I reallly want to pass something like
+                # [(x.title,predicted_ratings[cards2matrix[x.pk]]) for x in RatingCard.objects.filter(pk__in=recommendations)]
+                # here...
+                # the first one is title, the second one is rating. Also need id. Is there a way to pass more data with QuerySet????
+
                 RatingCard.objects.filter(pk__in=recommendations),
                 #Recommendation.objects.filter(user=request.user),
                 #'-value',
