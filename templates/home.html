@@ -23,11 +23,13 @@
     </div>
   {% endfor %}
   </div>
+  {% if pagination %}
   <div class='pagination'>
   {% for page in pagination %}
     {{ page|safe }}
   {% endfor %}
   </div>
+  {% endif %}
 {% else %}
 {% include 'login.html' %}
 {% endif %}

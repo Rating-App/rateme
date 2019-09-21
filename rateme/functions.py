@@ -2,39 +2,49 @@ from .forms import RateForm, NewCardForm
 from django.shortcuts import render, redirect
 from .models import Rating, RatingCard, Recommendation
 
-def make_context(request, n, db_query, order, form, **kwargs):
+def make_context(request, db_query, order, form, **kwargs):
+    '''
+    Optional arguments:
+    query='string': search query
+    pagination=(True/False, n): enable/disable pagination, number of items per page
+    '''
     context = {}
-    current_page = int(request.GET.get('page')) \
-        if request.GET.get('page') else 1
     try:
-        if 'query' in kwargs:
-            pagination, data = make_page(
-                current_page,
-                n,
-                db_query,
-                order,
-                query=kwargs['query'] # ...
-            )
+        if 'pagination' in kwargs:
+            current_page = int(request.GET.get('page')) \
+                if request.GET.get('page') else 1
+            n = kwargs['pagination'][1]
+            limit = n * current_page
+            offset = limit - n
+            limited_query = db_query.order_by(order)[offset:limit]
+            rows_count = db_query.count()
+            pages_count = int(rows_count / n) + 1 if rows_count % n > 0 \
+                else int(rows_count / n)
+            if kwargs['pagination'][0] == True:
+                if 'query' in kwargs:
+                    pagination = make_pagination(current_page, n, pages_count, query=kwargs['query'])
+                else:
+                    pagination = make_pagination(current_page, n, pages_count)
+                context.update({
+                    'data': limited_query,
+                    'pagination': pagination,
+                    'form': form,
+                })
+            elif kwargs['pagination'][0] == False:
+                context.update({
+                    'data': limited_query,
+                    'form': form,
+                })
         else:
-            pagination, data = make_page(
-                current_page,
-                n,
-                db_query,
-                order,
-            )
-        context.update({
-            'pagination': pagination,
-            'data': data,
-            'form': form,
-        })
+            context.update({
+                'data': db_query,
+                'form': form,
+            })
     except RatingCard.DoesNotExist:
         context['data'] = None
     return context
 
-def make_page(current_page, n, db_query, order, **kwargs):
-    rows_count = db_query.count()
-    pages_count = int(rows_count / n) + 1 if rows_count % n > 0 \
-        else int(rows_count / n)
+def make_pagination(current_page, n, pages_count, **kwargs):
     pagination = []
     if 'query' in kwargs:
         for page in range(1, pages_count+1):
@@ -64,10 +74,7 @@ def make_page(current_page, n, db_query, order, **kwargs):
                     page
                     )
             pagination.append(string)
-    limit = n * current_page
-    offset = limit - n
-    limited_query = db_query.order_by(order)[offset:limit]
-    return pagination, limited_query
+    return pagination
 
 def process_rate_post_request(request, pk):
     form = RateForm(request.POST)

@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from .models import Rating, RatingCard, Recommendation
 from .forms import RateForm, NewCardForm
-from .functions import make_context, make_page, process_rate_post_request
+from .functions import make_context, make_pagination, process_rate_post_request
 
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -43,13 +43,13 @@ def search_view(request):
                 'search.html',
                 make_context(
                     request,
-                    20,
                     RatingCard.objects.filter(
                         Q(title__icontains=query) | Q(text__icontains=query)
                     ),
                     '-id',
                     RateForm(),
-                    query=query # ...
+                    query=query,
+                    pagination=(True, 20),
                 ),
             )
         else:
@@ -72,10 +72,10 @@ def index_view(request):
             'home.html',
             make_context(
                 request,
-                20,
                 RatingCard.objects.exclude(id__in=rated),
                 '-id',
-                RateForm(),  
+                RateForm(),
+                pagination=(False, 20),
             ),
         )
     elif request.method == "POST" and request.user.is_authenticated:
@@ -94,10 +94,10 @@ def my_ratings_view(request):
             'my_ratings.html',
             make_context(
                 request,
-                20,
                 Rating.objects.filter(user=request.user),
                 '-id',
                 RateForm(),
+                pagination=(True, 20),
             ),
         )
     elif request.method == "POST" and request.user.is_authenticated:
@@ -132,7 +132,6 @@ def my_recommendations_view(request):
             'my_recommendations.html',
             make_context(
                 request,
-                20,
 
                 # NOTE: I reallly want to pass something like
                 # [(x.title,predicted_ratings[cards2matrix[x.pk]]) for x in RatingCard.objects.filter(pk__in=recommendations)]
@@ -144,6 +143,7 @@ def my_recommendations_view(request):
                 #'-value',
                 '-id',
                 RateForm(),
+                pagination=(True, 20),
             ),
         )
     if request.method == "POST" and request.user.is_authenticated:
