@@ -40,7 +40,7 @@ def make_context(request, db_query, order, form, **kwargs):
                 'data': db_query,
                 'form': form,
             })
-    except RatingCard.DoesNotExist:
+    except RatingCard.DoesNotExist: # todo
         context['data'] = None
     return context
 
