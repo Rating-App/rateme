@@ -6,7 +6,7 @@
 {% block content %}
 {% if user.is_authenticated %}
   {% if data %}
-  <h2>Your ratings are listed below:</h2>
+  <h2 class='heading'>Your ratings are listed below:</h2>
   <div class='content'>
       {% for e in data %}
         <div class="card">
@@ -32,9 +32,6 @@
   {% else %}
   <p>You didn't rate anything yet!</p>
   {% endif %}
-  <ul>
-    <li><a href="{% url 'logout' %}">logout</a></li>
-  </ul>
 {% else %}
   <p>You must be logged in to see this page!</p>
   <ul>

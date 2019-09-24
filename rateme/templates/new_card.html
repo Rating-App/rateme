@@ -5,15 +5,14 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    <h2>Create new card</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <button type="submit">Submit</button>
-    </form>
-  <ul>
-    <li><a href="{% url 'logout' %}">logout</a></li>
-  </ul>
+    <h2 class='heading'>Create new card</h2>
+    <div class='wrapper'>
+      <form method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+      <button type="submit">Submit</button>
+      </form>
+    </div>
 {% else %}
   <p>You must be logged in to see this page!</p>
   <ul>

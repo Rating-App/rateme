@@ -10,8 +10,9 @@
 <body>
   <main>
       {% if user.is_authenticated %}
-          <div class='user'>{{ user.username }}</div>
+          <!--<div class='user'>{{ user.username }}</div>-->
           <ul class='menu'>
+          <li class='user'>{{ user.username }}</li>
           <li><a href="{% url 'home' %}">Home</a></li>
           <li><a href="{% url 'new-card' %}">Create new card</a></li>
           <li><a href="{% url 'my-ratings' %}">My ratings</a></li>

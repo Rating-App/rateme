@@ -5,7 +5,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-  <h2>Your recommendations are listed below:</h2>
+  <h2 class='heading'>Your recommendations are listed below:</h2>
   {% if data %}
   <div class='content'>
       {% for e in data %}
@@ -32,9 +32,6 @@
   {% else %}
   <p>None yet! Please rate more cards first! Or wait about 5 minutes for recommendations to be ready...</p>
   {% endif %}
-  <ul>
-    <li><a href="{% url 'logout' %}">logout</a></li>
-  </ul>
 {% else %}
   <p>You must be logged in to see this page!</p>
   <ul>
