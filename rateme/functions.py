@@ -83,12 +83,14 @@ def process_rate_post_request(request, pk):
         print(request.POST.get('rating_card'))
         try:
             rate = Rating(
-                rating_card = RatingCard.objects.get(pk=pk),
                 user = request.user,
+                rating = form.cleaned_data['rating'],
+                rating_card = RatingCard.objects.get(pk=pk),
             )
+            #print(rate)
+            #rate.rating = form.cleaned_data['rating']
             print(rate)
-            rate.rating = form.cleaned_data['rating']
-            rate.save(update_fields=['rating']) # field won't update for some reason
+            rate.save() # field won't update for some reason
         except Rating.DoesNotExist:
             rate = Rating(
                 rating_card = RatingCard.objects.get(pk=pk),

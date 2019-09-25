@@ -7,8 +7,9 @@
 {% load static %}
 {% if user.is_authenticated %}
   <div class='content'>
+      <button onclick='getContent()'>AJAX test</button>
   {% for e in data %}
-    <div class="card">
+    <div id="card_{{ e.id }}" class="card">
       <a href="{% url 'rate' e.id %}">{{ e.title }}</a>
       <!--<div class="card_picture">placeholder for images</div>-->
       <form method='POST' class="home_rateform">
@@ -24,6 +25,23 @@
     </div>
   {% endfor %}
   </div>
+  <script>
+    function getContent() {
+      var xhttp;
+      if (window.XMLHttpRequest) {
+        xhttp = new XMLHttpRequest();
+      };
+      xhttp.onreadystatechange = function() {
+        if (this.status == 200) {
+          document.getElementsByClassName('content').innerHTML = this.responseText;
+        };
+      };
+      console.log('321')
+      xhttp.open("GET", '{% url 'reload' %}', true);
+      console.log(xhttp)
+      xhttp.send();
+    };
+  </script>
   {% if pagination %}
   <div class='pagination'>
   {% for page in pagination %}

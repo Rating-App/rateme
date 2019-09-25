@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import generic
+from django.http import HttpResponse
+from django.http import JsonResponse
 
 from django.db import IntegrityError
 from django.db.models import Q
@@ -64,6 +66,11 @@ def search_view(request):
         )
         return redirect('home')
 
+def reload_view(request):
+    if request.method == "GET":
+        print('success')
+    return HttpResponse('text')
+
 def index_view(request):
     if request.method == "GET" and request.user.is_authenticated:
         rated = [i.rating_card.id for i in Rating.objects.filter(user=request.user)]
@@ -84,6 +91,8 @@ def index_view(request):
             int(request.POST.get('rating_card'))
         )
         return redirect('home')
+        #return HttpResponse(status=200)
+        #return JsonResponse({'status': 'ok'})
     else:
         return render(request, 'home.html')
 

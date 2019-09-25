@@ -14,5 +14,6 @@ urlpatterns = [
     path('new-card/', views.new_card_view, name='new-card'),
     path('search/', views.search_view, name='search'),
     path('statistics/', views.statistics_view, name='statistics'),
+    path('reload/', views.reload_view, name='reload'),
 ]
 
