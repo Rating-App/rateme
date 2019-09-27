@@ -29,13 +29,19 @@ class Command(BaseCommand):
 
         cur = conn.cursor()
 
-        users = {}
-        users_back = []
-        cards = {}
-        cards_back = []
+        try:
+            users = np.load("data/users.npy", allow_pickle=True).flat[0]
+            users_back = np.load('data/users_back.npy')
+            cards = np.load("data/cards.npy", allow_pickle=True).flat[0]
+            cards_back = np.load('data/cards_back.npy')
+            M = np.load('data/recommendations.npy')
 
-        # matrix to store result in
-        M = csc_matrix((1, 1)).toarray()
+        except:
+            users = {}
+            users_back = []
+            cards = {}
+            cards_back = []
+            M = csc_matrix((1, 1)).toarray()
 
         Recommendation.objects.all().delete()
         iter_num = 0
