@@ -120,34 +120,38 @@ def my_ratings_view(request):
 
 def my_recommendations_view(request):
     if request.method == "GET" and request.user.is_authenticated:
-        #print("loading...")
+        try:
+            #print("loading...")
 
-        # TODO: all this loading code should be moved to a different place
-        #       maybe make a miniserver to retrive this information from?
-        #       sort of like a mini fake database...
-        data = np.load("data/recommendations.npy", mmap_mode='r')
-        users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
-        matrix2cards = np.load("data/cards_back.npy", mmap_mode='r')
-        cards2matrix = np.load("data/cards.npy", allow_pickle=True).flat[0]
-        #print("loaded")
+            # TODO: all this loading code should be moved to a different place
+            #       maybe make a miniserver to retrive this information from?
+            #       sort of like a mini fake database...
+            data = np.load("data/recommendations.npy", mmap_mode='r')
+            users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
+            matrix2cards = np.load("data/cards_back.npy", mmap_mode='r')
+            cards2matrix = np.load("data/cards.npy", allow_pickle=True).flat[0]
+            #print("loaded")
 
-        matrix_id = users2matrix[request.user.pk]
-        #print("matrix_id")
+            matrix_id = users2matrix[request.user.pk]
+            #print("matrix_id")
 
-        predicted_ratings = data[matrix_id]
-        #print("predicted_ratings")
+            predicted_ratings = data[matrix_id]
+            #print("predicted_ratings")
 
-        recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > 1)][0]
-        #print("recommendations")
-        for recommendation in recommendations:
-            obj, created = Recommendation.objects.get_or_create(
-                user=request.user,
-                rating_card=RatingCard.objects.get(id=recommendation),
-                defaults={'value': predicted_ratings[cards2matrix[recommendation]]},
-            )
+            recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > 1)][0]
+            #print("recommendations")
+            for recommendation in recommendations:
+                obj, created = Recommendation.objects.get_or_create(
+                    user=request.user,
+                    rating_card=RatingCard.objects.get(id=recommendation),
+                    defaults={'value': predicted_ratings[cards2matrix[recommendation]]},
+                )
 
-            if not created:
-                obj.value = predicted_ratings[cards2matrix[recommendation]]
+                if not created:
+                    obj.value = predicted_ratings[cards2matrix[recommendation]]
+        except KeyError:
+            pass
+            # this user doesn't have any recommendations yet
 
         return render(
             request,

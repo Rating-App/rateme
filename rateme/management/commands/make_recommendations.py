@@ -31,9 +31,9 @@ class Command(BaseCommand):
 
         try:
             users = np.load("data/users.npy", allow_pickle=True).flat[0]
-            users_back = np.load('data/users_back.npy')
+            users_back = list(np.load('data/users_back.npy'))
             cards = np.load("data/cards.npy", allow_pickle=True).flat[0]
-            cards_back = np.load('data/cards_back.npy')
+            cards_back = list(np.load('data/cards_back.npy'))
             M = np.load('data/recommendations.npy')
 
         except:
@@ -113,7 +113,7 @@ class Command(BaseCommand):
             observed_padded = csc_matrix((data, (mrow, mcol)), shape=(num_users, num_cards))
             mask = csc_matrix((np.ones(len(data)), (mrow, mcol)), shape=(num_users, num_cards)).toarray()
             #M = csc_matrix((np.zeros(len(data)), (mrow, mcol)), shape=(num_users, num_cards)).toarray()
-            M.resize((num_users, num_cards))
+            M.resize((num_users, num_cards), refcheck=False)
             N = csc_matrix((np.zeros(len(data)), (mrow, mcol)), shape=(num_users, num_cards)).toarray()
 
             #M[:old_row_num, :old_col_num] = Mold
