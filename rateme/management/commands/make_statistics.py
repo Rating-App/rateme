@@ -11,6 +11,7 @@ import time
 import sys
 import matplotlib.pyplot as plt
 
+
 class Command(BaseCommand):
     help = 'Makes recommendations'
 
@@ -91,12 +92,28 @@ class Command(BaseCommand):
             return s
 
         observed_padded = csc_matrix((data, (mrow, mcol)), shape=(num_users, num_cards))
-
-        plt.plot(get_sing_vals_rank(observed_padded))
-        plt.savefig("rateme/static/observed")
-
         predicted = np.load('data/recommendations.npy')
         
+        plt.plot(get_sing_vals_rank(observed_padded))
         plt.plot(get_sing_vals_rank(predicted))
+        plt.title("Singular Values")
+        plt.xlabel("singular values")
+        plt.ylabel("importance")
         plt.legend(['padded','predicteed'])
+        plt.savefig("rateme/static/predicted_observed_sv")
+
+        plt.close()
+
+        plt.imshow(observed_padded.toarray(), cmap='gist_rainbow')
+        plt.title("Ratings")
+        plt.xlabel("cards")
+        plt.ylabel("users")
+        plt.savefig("rateme/static/observed")
+        
+        plt.close()
+        
+        plt.imshow(predicted, cmap='gist_rainbow')
+        plt.title("Predicted Ratings")
+        plt.xlabel("cards")
+        plt.ylabel("users")
         plt.savefig("rateme/static/predicted")

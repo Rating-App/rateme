@@ -7,6 +7,11 @@
   <h2 class='heading'>Statistics</h2>
   {% load static %}
   <div class='wrapper'>
-    <img src="{% static "predicted.png" %}" alt="Singular values">
+    <h3>Singular values</h3>
+    <img src="{% static "predicted_observed_sv.png" %}" alt="Singular values">
+    <h3>Ratings</h3>
+    <img src="{% static "observed.png" %}" alt="Ratings">
+    <h3>Predicted Ratings</h3>
+    <img src="{% static "predicted.png" %}" alt="Predicted ratings">
   </div>
 {% endblock %}
