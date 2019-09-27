@@ -1,0 +1,5 @@
+db.sqlite3
+ml-latest-small*
+**migrations*
+**__pycache__*
+data/*
