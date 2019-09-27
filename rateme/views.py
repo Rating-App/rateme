@@ -121,6 +121,10 @@ def my_ratings_view(request):
 def my_recommendations_view(request):
     if request.method == "GET" and request.user.is_authenticated:
         #print("loading...")
+
+        # TODO: all this loading code should be moved to a different place
+        #       maybe make a miniserver to retrive this information from?
+        #       sort of like a mini fake database...
         data = np.load("data/recommendations.npy", mmap_mode='r')
         users2matrix = np.load("data/users.npy", allow_pickle=True).flat[0] # it's a dictionary, TODO: maybe use pickle?
         matrix2cards = np.load("data/cards_back.npy", mmap_mode='r')
@@ -135,22 +139,23 @@ def my_recommendations_view(request):
 
         recommendations = [matrix2cards[matrix_card_id] for matrix_card_id in np.where(predicted_ratings > 1)][0]
         #print("recommendations")
+        for recommendation in recommendations:
+            obj, created = Recommendation.objects.get_or_create(
+                user=request.user,
+                rating_card=RatingCard.objects.get(id=recommendation),
+                defaults={'value': predicted_ratings[cards2matrix[recommendation]]},
+            )
+
+            if not created:
+                obj.value = predicted_ratings[cards2matrix[recommendation]]
 
         return render(
             request,
             'my_recommendations.html',
             make_context(
                 request,
-
-                # NOTE: I reallly want to pass something like
-                # [(x.title,predicted_ratings[cards2matrix[x.pk]]) for x in RatingCard.objects.filter(pk__in=recommendations)]
-                # here...
-                # the first one is title, the second one is rating. Also need id. Is there a way to pass more data with QuerySet????
-
-                RatingCard.objects.filter(pk__in=recommendations),
-                #Recommendation.objects.filter(user=request.user),
-                #'-value',
-                '-id',
+                Recommendation.objects.filter(user=request.user),
+                '-value',
                 RateForm(),
                 pagination=(True, 20),
             ),

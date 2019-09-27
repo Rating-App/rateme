@@ -10,7 +10,7 @@
   <div class='content'>
       {% for e in data %}
         <div class="card">
-          <a href="{% url 'rate' e.id %}">{{ e.title }} with rating {{ e.title }}</a><!--TODO: fix rating value -->
+          <a href="{% url 'rate' e.rating_card.id %}">{{ e.rating_card.title }} with rating {{ e.value }}</a>
           <form method='POST' class="home_rateform">
             {% csrf_token %}
             <span class="select_wrapper">
