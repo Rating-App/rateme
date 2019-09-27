@@ -85,14 +85,14 @@ body {
     box-shadow: 0 0 5px #b1a1a1;
   }
   
-  .content .card a {
+  /*.content .card a {
     color: #120202;
     text-decoration: none;
-  }
+  }*/
   
-  .content .card a:hover {
+  /*.content .card a:hover {
     color: white;
-  }
+  }*/
   
   .content .card:hover {
     background-color: #463636;
@@ -100,9 +100,9 @@ body {
     box-shadow: 0 0 5px #463636;
   }
   
-  .content .card:hover a {
+  /*.content .card:hover a {
     color: white;
-  }
+  }*/
   
   .content .card form {
     float: right;
@@ -186,4 +186,9 @@ body {
     width: 200px;
     height: 200px;
     border: 1px dotted #160606;
+  }
+
+  a.remote_url {
+    text-color: cyan;
+    text-align: right;
   }
