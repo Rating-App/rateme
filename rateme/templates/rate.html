@@ -30,6 +30,15 @@
             <p>No tags</p>
         </div>
     {% endif %}
+    {% if card.url %}
+        <div class="card_url">
+            <a href="{{ card.url }}">{{ card.url }}</a>
+        </div>
+    {% else %}
+        <div class="card_url">
+            <p>No url</p>
+        </div>
+    {% endif %}
 
     <form class="rate_page_form" method="POST">
         {% csrf_token %}
