@@ -43,7 +43,6 @@ class Command(BaseCommand):
             cards_back = []
             M = csc_matrix((1, 1)).toarray()
 
-        Recommendation.objects.all().delete()
         iter_num = 0
         starting_time = time.time()
         while True:
