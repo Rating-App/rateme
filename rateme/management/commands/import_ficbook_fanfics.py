@@ -3,7 +3,6 @@ from rateme.models import RatingCard, Rating
 from django.db import IntegrityError
 import os
 from django.contrib.auth.models import User
-import csv
 
 class Command(BaseCommand):
     help = 'Import rating card data from ficbook.net'
@@ -20,10 +19,10 @@ class Command(BaseCommand):
 
         with open(movies_path, 'r') as movies_file:
             print("Importing fanfics...")
-            parsed_file = csv.reader(movies_file, delimiter=',', quotechar='|')
             i = 0
-            for fanfic in parsed_file:
+            for line in movies_file:
                 if i > 0:
+                    fanfic = line.split(",")
                     if not RatingCard.objects.filter(card_id=fanfic[0]):
                         # only add if it wasn't added before
                         ratingCard = RatingCard()

@@ -87,7 +87,7 @@ class Command(BaseCommand):
                str(len(data)/(num_users*num_cards)*100) + "%")
 
         def get_sing_vals_rank(matrix):
-            ut, s, vt = sparsesvd(csc_matrix(matrix), 100) # TODO: replace 500
+            ut, s, vt = sparsesvd(csc_matrix(matrix), 15)
 
             return s
 

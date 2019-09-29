@@ -10,16 +10,16 @@ import psycopg2
 import time
 import sys
 
-NSTEPS = 3 # number of iteration steps between saving
+NSTEPS = 10#3 # number of iteration steps between saving
 # NOTE: rank 15 is too small, let's try 30
 # 30 is still too small, try 60. NOTE: 100 was ok but felt like overfitting. Overfitting better?
 
-RANK = 10
+RANK = 5
 CONSIDER_ACTIVE = 30*60*60*24 # in seconds, 
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
 MINRATING = 0.1 # minimum rating to consider for recommendation
 SMALL = 0.1 # if predicted rating changed by less than this, don't update the records
-EPSILON = 0.5#0.37 # used for regularization
+EPSILON = 0.45#0.37 # used for regularization
 
 class Command(BaseCommand):
     help = 'Makes recommendations'
