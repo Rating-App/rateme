@@ -19,3 +19,17 @@ Other useful commands:
     -- use DROP TABLES name; and then manage.py migrate --run-syncdb to fix some errors
 
     pip install -r requirements.txt
+
+To clear tables:
+python3 manage.py shell
+
+from rateme.models import RatingCard, Rating
+from django.db import IntegrityError
+import os
+from django.contrib.auth.models import User
+
+RatingCard.objects.all().delete()
+Rating.objects.all().delete()
+User.objects.all().delete()
+
+python3 manage.py createsuperuser

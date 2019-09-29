@@ -24,12 +24,17 @@ class Command(BaseCommand):
             i = 0
             for fanfic in parsed_file:
                 if i > 0:
-                    ratingCard = RatingCard()
-                    ratingCard.title = fanfic[0]
-                    ratingCard.url = fanfic[1]
-                    try:
-                        ratingCard.save()
-                    except IntegrityError:
-                        print("already exists")
+                    if not RatingCard.objects.filter(card_id=fanfic[0]):
+                        # only add if it wasn't added before
+                        ratingCard = RatingCard()
+                        ratingCard.card_id = fanfic[0]
+                        ratingCard.title = ",".join(fanfic[1:-1])
+                        ratingCard.url = fanfic[-1]
+                        try:
+                            ratingCard.save()
+                        except IntegrityError:
+                            print("already exists")
+                    else:
+                        print("was added before")
                     print(str(i))
                 i += 1
