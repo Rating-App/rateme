@@ -74,6 +74,7 @@ body {
   }
   
   .content .card {
+    border-radius: 6px;
     width: 300px;
     display: block;
     grid-template-rows: auto auto;
@@ -85,19 +86,19 @@ body {
     box-shadow: 0 0 5px #b1a1a1;
   }
   
-  /*.content .card a {
+  .content .card a {
     color: #120202;
     text-decoration: none;
-  }*/
+  }
   
-  /*.content .card a:hover {
+  .content .card a:hover {
     color: white;
-  }*/
+  }
   
   .content .card:hover {
-    background-color: #463636;
+    background-color: #a69696;
     color: white;
-    box-shadow: 0 0 5px #463636;
+    box-shadow: 0 0 2px #463636;
   }
   
   /*.content .card:hover a {
@@ -121,7 +122,7 @@ body {
     width: 268px;
   }
 
-  .content .card:hover .select_wrapper select {
+  /*.content .card:hover .select_wrapper select {
     background-color: #c6b6b6;
     color: #160606;
   }
@@ -129,7 +130,7 @@ body {
   .content .card:hover .submit_rating {
     background-color: #c6b6b6;
     color: #160606;
-  }
+  }*/
 
   .submit_rating {
     border: none;

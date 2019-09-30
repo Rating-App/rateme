@@ -6,7 +6,7 @@
 {% block content %}
 {% load static %}
 {% if user.is_authenticated %}
-  <div class='content'>
+  <div class='content' id='content'>
       <button onclick='getContent()'>AJAX test</button>
   {% for e in data %}
     <div id="card_{{ e.id }}" class="card">
@@ -22,7 +22,7 @@
         <span>
           <input name="rating_card" id="id_rating_card" value="{{ e.id }}" type="hidden">
         </span>
-        <input class="submit_rating" type="submit" value="Rate">
+        <button class="submit_rating" onclick="sendForm(this.parentElement)">Rate</button>
       </form>
       </li>
       {% if e.url %}
@@ -48,6 +48,18 @@
       console.log(xhttp)
       xhttp.send();
     };
+
+    function sendForm(e) {
+      var request = new XMLHttpRequest();
+      console.log(e.parentElement)
+      request.open('POST')
+      request.send(new FormData(e));
+      //request.onreadystatechange = getData(this.responseText);
+    };
+
+   // function getData(t) {
+   //   document.getElementById('content').innerHTML = t
+    //};
   </script>
   {% if pagination %}
   <div class='pagination'>

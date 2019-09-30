@@ -90,9 +90,13 @@ def index_view(request):
             request,
             int(request.POST.get('rating_card'))
         )
+        #data = {'content': '123'}
         return redirect('home')
-        #return HttpResponse(status=200)
-        #return JsonResponse({'status': 'ok'})
+        #return HttpResponse(data)
+        #return JsonResponse(data)
+    elif request.method == 'POST' and request.user.is_authenticated \
+        and request.is_ajax():
+        print('ajax')
     else:
         return render(request, 'home.html')
 
