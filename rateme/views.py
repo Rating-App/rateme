@@ -149,6 +149,12 @@ def my_recommendations_view(request):
 
                 if not created:
                     obj.value = predicted_ratings[cards2matrix[recommendation]]
+
+            # Now update previously created recommendations
+            # (since some of them might be totally wrong)
+            for recommendation in Recommendation.objects.all().filter(user=request.user):
+                recommendation.value = predicted_ratings[cards2matrix[recommendation.rating_card.id]]
+
         except KeyError:
             pass
             # this user doesn't have any recommendations yet
