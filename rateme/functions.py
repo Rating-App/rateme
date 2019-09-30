@@ -1,6 +1,7 @@
 from .forms import RateForm, NewCardForm
 from django.shortcuts import render, redirect
 from .models import Rating, RatingCard, Recommendation
+from django.db import IntegrityError
 
 def make_context(request, db_query, order, form, **kwargs):
     '''
@@ -101,7 +102,7 @@ def process_rate_post_request(request, pk):
         except ValueError:
             pass # todo
         except IntegrityError:
-            pass
+            pass # do this as well!
         return redirect('home')
     else:
         print('form is not valid')
