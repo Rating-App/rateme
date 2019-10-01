@@ -19,7 +19,7 @@ CONSIDER_ACTIVE = 30*60*60*24 # in seconds,
                               # i.e. 60*60*24 -- only update those users that logged in at least a day ago
 MINRATING = 0.1 # minimum rating to consider for recommendation
 SMALL = 0.1 # if predicted rating changed by less than this, don't update the records
-EPSILON = 0.45#0.37 # used for regularization
+EPSILON = 0.5#0.45#0.37 # used for regularization
 
 class Command(BaseCommand):
     help = 'Makes recommendations'
@@ -46,7 +46,7 @@ class Command(BaseCommand):
         iter_num = 0
         starting_time = time.time()
         while True:
-            cur.execute("""SELECT * from rateme_rating""")
+            cur.execute("""SELECT id,user_id,rating,rating_card_id from rateme_rating""")
             rows = cur.fetchall()
 
             for row in rows:
