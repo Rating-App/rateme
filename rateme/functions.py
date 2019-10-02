@@ -103,7 +103,7 @@ def process_rate_post_request(request, pk):
             pass # todo
         except IntegrityError:
             pass # do this as well!
-        return redirect('home')
+        #return redirect('home')
     else:
         print('form is not valid')
         return redirect('rate', pk)

@@ -67,9 +67,10 @@ def search_view(request):
         return redirect('home')
 
 def reload_view(request):
-    if request.method == "GET":
-        print('success')
-    return HttpResponse('text')
+    if request.method == 'POST':
+        print(request.POST)
+        print(request.META)
+        return HttpResponse(status=200)
 
 def index_view(request):
     if request.method == "GET" and request.user.is_authenticated:
@@ -86,17 +87,21 @@ def index_view(request):
             ),
         )
     elif request.method == "POST" and request.user.is_authenticated:
+    #    print(request.POST)
+        for i in request.META:
+            print(i)
         process_rate_post_request(
             request,
             int(request.POST.get('rating_card'))
         )
-        #data = {'content': '123'}
+        data = {'content': '123'}
         return redirect('home')
-        #return HttpResponse(data)
-        #return JsonResponse(data)
-    elif request.method == 'POST' and request.user.is_authenticated \
-        and request.is_ajax():
-        print('ajax')
+    #    print('index POST')
+    #    return HttpResponse('test')
+    #    return JsonResponse(data)
+    #elif request.method == 'POST' and request.user.is_authenticated \
+    #    and request.is_ajax():
+    #    print('ajax')
     else:
         return render(request, 'home.html')
 

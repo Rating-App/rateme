@@ -7,7 +7,6 @@
 {% load static %}
 {% if user.is_authenticated %}
   <div class='content' id='content'>
-      <button onclick='getContent()'>AJAX test</button>
   {% for e in data %}
     <div id="card_{{ e.id }}" class="card">
       <ul style="list-style: none; padding: 0;">
@@ -51,15 +50,21 @@
 
     function sendForm(e) {
       var request = new XMLHttpRequest();
-      console.log(e.parentElement)
-      request.open('POST')
+      request.open('POST', '{% url 'reload' %}', true);
+      request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       request.send(new FormData(e));
-      //request.onreadystatechange = getData(this.responseText);
+      request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+          console.log(request.status)
+          console.log(request.response)
+        }
+      };
     };
 
-   // function getData(t) {
+    function getData(t) {
    //   document.getElementById('content').innerHTML = t
-    //};
+      console.log(t)
+    };
   </script>
   {% if pagination %}
   <div class='pagination'>
