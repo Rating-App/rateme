@@ -87,7 +87,7 @@ class Command(BaseCommand):
                str(len(data)/(num_users*num_cards)*100) + "%")
 
         def get_sing_vals_rank(matrix):
-            ut, s, vt = sparsesvd(csc_matrix(matrix), 15)
+            ut, s, vt = sparsesvd(csc_matrix(matrix), 100)
 
             return s
 
@@ -104,7 +104,15 @@ class Command(BaseCommand):
 
         plt.close()
 
-        plt.imshow(observed_padded.toarray(), cmap='gist_rainbow')
+        observed_padded = observed_padded.toarray()
+        
+        # fix aspect ratio
+        m = int(1.5*min(observed_padded.shape))
+        x = min(observed_padded.shape[0], m)
+        y = min(observed_padded.shape[1], m)
+
+        plt.imshow(observed_padded[:x,:y], vmin=-2, vmax=2)
+        plt.colorbar()
         plt.title("Ratings")
         plt.xlabel("cards")
         plt.ylabel("users")
@@ -112,8 +120,45 @@ class Command(BaseCommand):
         
         plt.close()
         
-        plt.imshow(predicted, cmap='gist_rainbow')
+        plt.imshow(predicted[:x,:y], vmin=-2, vmax=2)
+        plt.colorbar()
         plt.title("Predicted Ratings")
         plt.xlabel("cards")
         plt.ylabel("users")
         plt.savefig("rateme/static/predicted")
+
+        plt.close()
+
+        m = 10
+        alpha = 0.4
+
+        _, bins, _ = plt.hist(observed_padded[0,:][observed_padded[0,:] != 0][:], bins=100, alpha=alpha)
+        for i in range(1, m):
+            _ = plt.hist(observed_padded[i,:][observed_padded[i,:] != 0][:], bins=bins, alpha=alpha)
+        plt.title("Observed User Distribution")
+        plt.savefig("rateme/static/user_dist_o")
+
+        plt.close()
+
+        _, bins, _ = plt.hist(observed_padded[:,0][observed_padded[:,0] != 0][:], bins=100, alpha=alpha)
+        for i in range(1, m):
+            _ = plt.hist(observed_padded[:,i][observed_padded[:,i] != 0][:], bins=bins, alpha=alpha)
+        plt.title("Observed Card Distribution")
+        plt.savefig("rateme/static/card_dist_o")
+
+        plt.close()
+
+        _, bins, _ = plt.hist(predicted[0,:], bins=100, alpha=alpha)
+        for i in range(1, m):
+            _ = plt.hist(predicted[i,:], bins=bins, alpha=alpha)
+        plt.title("Predicted User Distribution")
+        plt.savefig("rateme/static/user_dist_p")
+
+        plt.close()
+
+        _, bins, _ = plt.hist(predicted[:,0], bins=100, alpha=alpha)
+        for i in range(1, m):
+            _ = plt.hist(predicted[:,i], bins=bins, alpha=alpha)
+        plt.title("Predicted Card Distribution")
+        plt.savefig("rateme/static/card_dist_p")
+
